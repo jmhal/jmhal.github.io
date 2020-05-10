@@ -58,8 +58,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="/scheme-ubuntu-max-three-squares.html"><h1>Setting up MIT Scheme on Ubuntu 18.04</h1></a>
-Tue 31 July 2018
+            <a href="/ubuntu-18-04-go-environment.html"><h1>How to Configure Ubuntu 18.04 Server as Development Environment for Go</h1></a>
+Sun 10 May 2020
 
 by <a class="url fn" href="/author/jmhal.html">jmhal</a>
  
@@ -68,38 +68,42 @@ by <a class="url fn" href="/author/jmhal.html">jmhal</a>
  
         </div>
         
-        <div><p>I'm going through <a href="http://mitpress.mit.edu/sites/default/files/sicp/full-text/book/book.html">Structure and Interpretation of Computer Programs</a> and for exercise 1.3 there is this question:</p>
-<div class="highlight"><pre><span></span>Exercise 1.3.  Define a procedure that takes three numbers as arguments and returns the sum of the squares of the two larger numbers. 
+        <div><p>Some might say that Ubuntu Server is not the ideal version for development and testing. But I like to keep a VM on AWS just for playing around with Go, and it is nice to have a good text editor with support forsyntax highlighting.</p>
+<p>With fresh install of Ubuntu 18.04, run the following to retrieve the snaps of NVIM and Go:</p>
+<div class="highlight"><pre><span></span>$ sudo snap install --beta nvim --classic
+$ sudo snap install go --classic
 </pre></div>
 
 
-<p>All the other questions for this section may be solved with pen and paper, but I think this one is easier to see when you code. First, let's install <em>scheme</em> on Ubuntu:</p>
-<div class="highlight"><pre><span></span>$ sudo apt install mit-scheme
+<p>I am using <em>snap</em> because it retrieves the latest (or close) versions of the packages. Remember, this is an testing environment, not a production server. After installation, let's head to <a href="http://vim-bootstrap.com/">Vim Bootstrap</a> and create a configuration file for NVIM. Choose Go and whatever other languages you might find interesting, then at the final option be sure to pick <em>neovim</em>. Save the file as <em>$HOME/.confg/nvim/init.vim</em>. All you have to do now is start <em>nvim</em> and wait for it to download all the plugins.</p>
+<p>After this first batch of packages, you should configure at least one directory in your GOPATH. Let's use <em>$HOME/go</em>:</p>
+<div class="highlight"><pre><span></span>$ mkdir <span class="nv">$HOME</span>/go
+$ <span class="nb">export</span> <span class="nv">GOPATH</span><span class="o">=</span><span class="nv">$HOME</span>/go
 </pre></div>
 
 
-<p>Secondly, let's create a file <em>max-three-sum-squares.scm</em> with the following content:</p>
-<div class="highlight"><pre><span></span><span class="p">(</span><span class="nv">define</span> <span class="p">(</span><span class="nv">max-three-square</span> <span class="nv">x</span> <span class="nv">y</span> <span class="nv">z</span><span class="p">)</span>
-   <span class="p">(</span> <span class="nb">cond</span>
-       <span class="p">((</span><span class="nb">and</span> <span class="p">(</span><span class="nb">&gt;</span> <span class="nv">x</span> <span class="nv">z</span><span class="p">)</span> <span class="p">(</span><span class="nb">&gt;</span> <span class="nv">y</span> <span class="nv">z</span><span class="p">))</span> <span class="p">(</span><span class="nb">+</span><span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="nv">x</span><span class="p">)(</span><span class="nb">*</span> <span class="nv">y</span> <span class="nv">y</span><span class="p">)))</span>
-       <span class="p">((</span><span class="nb">and</span> <span class="p">(</span><span class="nb">&gt;</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">)</span> <span class="p">(</span><span class="nb">&gt;</span> <span class="nv">z</span> <span class="nv">y</span><span class="p">))</span> <span class="p">(</span><span class="nb">+</span><span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="nv">x</span><span class="p">)(</span><span class="nb">*</span> <span class="nv">z</span> <span class="nv">z</span><span class="p">)))</span>
-       <span class="p">((</span><span class="nb">and</span> <span class="p">(</span><span class="nb">&gt;</span> <span class="nv">z</span> <span class="nv">x</span><span class="p">)</span> <span class="p">(</span><span class="nb">&gt;</span> <span class="nv">y</span> <span class="nv">x</span><span class="p">))</span> <span class="p">(</span><span class="nb">+</span><span class="p">(</span><span class="nb">*</span> <span class="nv">z</span> <span class="nv">z</span><span class="p">)(</span><span class="nb">*</span> <span class="nv">y</span> <span class="nv">y</span><span class="p">)))</span>
-   <span class="p">)</span>
-<span class="p">)</span>
-<span class="p">(</span><span class="nv">display</span> <span class="p">(</span><span class="nv">max-three-square</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span><span class="p">))</span>
-<span class="p">(</span><span class="nv">display</span> <span class="s">&quot;\n&quot;</span><span class="p">)</span>
-</pre></div>
-
-
-<p>To execute the program, we have to call the interpreter with the code, but requesting it not to display any debug information (hence the --quiet flag):</p>
-<div class="highlight"><pre><span></span>$ scheme --quiet &lt; max-three-sum-squares.scm
-</pre></div>
-
-
-<p>That's it, you are now a little schemer.</p></div>
+<p>Now open <em>nvim</em>, go to command prompt (type <em>:</em>) and then insert <em>GoInstallBinaries</em>. Besides syntax highlighting, you also get commands like <em>GoBuild</em> and <em>GoTest</em>. Code completion is also available, but it is a little bit tricky, here are the steps [Code Completion in neo vim with Go] (https://octetz.com/docs/2019/2019-04-24-vim-as-a-go-ide/)</p></div>
         <hr />
     </div>
 		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/scheme-ubuntu-max-three-squares.html"><h2>Setting up MIT Scheme on Ubuntu 18.04</h2></a>
+        <div class= "well small"> Tue 31 July 2018
+
+by <a class="url fn" href="/author/jmhal.html">jmhal</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>How to install scheme and code a simple function.</p> <a class="btn btn-info xsmall" href="/scheme-ubuntu-max-three-squares.html">read more</a></div>
+    </div>	
+				
 <div class="pagination">
 <ul>
     <li class="prev disabled"><a href="#">&larr; Previous</a></li>
@@ -172,7 +176,7 @@ by <a class="url fn" href="/author/jmhal.html">jmhal</a>
     </div>     </div> 
 <footer>
 <br />
-<p><a href="">JMHAL</a> &copy; jmhal 2018</p>
+<p><a href="">JMHAL</a> &copy; jmhal 2020</p>
 </footer>
 
 </div> <!-- /container -->

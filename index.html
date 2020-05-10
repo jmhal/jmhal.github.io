@@ -58,8 +58,8 @@
 
     <div class='article'>
         <div class="content-title">
-            <a href="/breadth-first-depth-first-go.html"><h1>An Example of Breadth-first and Depth-first Search Algorithms in Go</h1></a>
-Tue 20 November 2018
+            <a href="/ubuntu-18-04-go-environment.html"><h1>How to Configure Ubuntu 18.04 Server as Development Environment for Go</h1></a>
+Sun 10 May 2020
 
 by <a class="url fn" href="/author/jmhal.html">jmhal</a>
  
@@ -68,86 +68,42 @@ by <a class="url fn" href="/author/jmhal.html">jmhal</a>
  
         </div>
         
-        <div><p>Below is an example of the two classical approaches for traversing a tree, this time written in the Go programming language.</p>
-<div class="highlight"><pre><span></span><span class="n">package</span> <span class="n">main</span>
-
-<span class="kn">import</span> <span class="p">(</span>
-   <span class="s2">&quot;fmt&quot;</span>
-<span class="p">)</span>
-
-<span class="nb">type</span> <span class="n">tree</span> <span class="n">struct</span> <span class="p">{</span>
-   <span class="n">value</span> <span class="n">string</span>
-   <span class="n">nodes</span> <span class="p">[]</span><span class="o">*</span><span class="n">tree</span>
-<span class="p">}</span>
-
-<span class="n">func</span> <span class="n">main</span> <span class="p">()</span> <span class="p">{</span>
-   <span class="n">node7</span> <span class="p">:</span><span class="o">=</span> <span class="n">tree</span><span class="p">{</span><span class="n">value</span><span class="p">:</span> <span class="s2">&quot;node7&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="p">[]</span><span class="o">*</span><span class="n">tree</span><span class="p">{}}</span>
-   <span class="n">node6</span> <span class="p">:</span><span class="o">=</span> <span class="n">tree</span><span class="p">{</span><span class="n">value</span><span class="p">:</span> <span class="s2">&quot;node6&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="p">[]</span><span class="o">*</span><span class="n">tree</span><span class="p">{}}</span>
-
-   <span class="n">node5</span> <span class="p">:</span><span class="o">=</span> <span class="n">tree</span><span class="p">{</span><span class="n">value</span><span class="p">:</span> <span class="s2">&quot;node5&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="p">[]</span><span class="o">*</span><span class="n">tree</span><span class="p">{}}</span>
-   <span class="n">node4</span> <span class="p">:</span><span class="o">=</span> <span class="n">tree</span><span class="p">{</span><span class="n">value</span><span class="p">:</span> <span class="s2">&quot;node4&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="p">[]</span><span class="o">*</span><span class="n">tree</span><span class="p">{}}</span>
-   <span class="n">node3</span> <span class="p">:</span><span class="o">=</span> <span class="n">tree</span><span class="p">{</span><span class="n">value</span><span class="p">:</span> <span class="s2">&quot;node3&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="p">[]</span><span class="o">*</span><span class="n">tree</span><span class="p">{}}</span>
-
-   <span class="n">node1</span> <span class="p">:</span><span class="o">=</span> <span class="n">tree</span><span class="p">{</span><span class="n">value</span><span class="p">:</span> <span class="s2">&quot;node1&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="p">[]</span><span class="o">*</span><span class="n">tree</span><span class="p">{</span><span class="o">&amp;</span><span class="n">node3</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">node4</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">node5</span><span class="p">}}</span>
-   <span class="n">node2</span> <span class="p">:</span><span class="o">=</span> <span class="n">tree</span><span class="p">{</span><span class="n">value</span><span class="p">:</span> <span class="s2">&quot;node2&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="p">[]</span><span class="o">*</span><span class="n">tree</span><span class="p">{</span><span class="o">&amp;</span><span class="n">node6</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">node7</span><span class="p">}}</span>
-
-   <span class="n">node0</span> <span class="p">:</span><span class="o">=</span> <span class="n">tree</span><span class="p">{</span><span class="n">value</span><span class="p">:</span> <span class="s2">&quot;node0&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="p">:</span> <span class="p">[]</span><span class="o">*</span><span class="n">tree</span><span class="p">{</span><span class="o">&amp;</span><span class="n">node1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">node2</span><span class="p">}}</span>
-
-   <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s2">&quot;Breadth First:&quot;</span><span class="p">)</span>
-   <span class="n">breadthFirst</span><span class="p">(</span><span class="n">nodeInfo</span><span class="p">,</span> <span class="p">[]</span><span class="o">*</span><span class="n">tree</span><span class="p">{</span><span class="o">&amp;</span><span class="n">node0</span><span class="p">})</span>
-   <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">()</span>
-   <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="s2">&quot;Depth First:&quot;</span><span class="p">)</span>
-   <span class="n">depthFirst</span><span class="p">(</span><span class="n">nodeInfo</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">node0</span><span class="p">,</span> <span class="n">make</span><span class="p">(</span><span class="nb">map</span><span class="p">[</span><span class="o">*</span><span class="n">tree</span><span class="p">]</span><span class="nb">bool</span><span class="p">))</span>
-   <span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">()</span>
-
-   <span class="k">return</span>
-<span class="p">}</span>
-
-<span class="n">func</span> <span class="n">nodeInfo</span><span class="p">(</span><span class="n">node</span> <span class="o">*</span><span class="n">tree</span><span class="p">)</span> <span class="p">{</span>
-   <span class="n">fmt</span><span class="o">.</span><span class="n">Printf</span><span class="p">(</span><span class="s2">&quot; </span><span class="si">%s</span><span class="s2"> &quot;</span><span class="p">,</span> <span class="p">(</span><span class="o">*</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-<span class="p">}</span>
-
-<span class="n">func</span> <span class="n">breadthFirst</span><span class="p">(</span><span class="n">f</span> <span class="n">func</span><span class="p">(</span><span class="n">node</span> <span class="o">*</span><span class="n">tree</span><span class="p">),</span> <span class="n">worklist</span> <span class="p">[]</span><span class="o">*</span><span class="n">tree</span><span class="p">)</span> <span class="p">{</span>
-   <span class="n">seen</span> <span class="p">:</span><span class="o">=</span> <span class="n">make</span><span class="p">(</span><span class="nb">map</span><span class="p">[</span><span class="o">*</span><span class="n">tree</span><span class="p">]</span><span class="nb">bool</span><span class="p">)</span>
-   <span class="k">for</span> <span class="nb">len</span><span class="p">(</span><span class="n">worklist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
-      <span class="n">nodes</span> <span class="p">:</span><span class="o">=</span> <span class="n">worklist</span>
-      <span class="n">worklist</span> <span class="o">=</span> <span class="n">nil</span>
-      <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">node</span> <span class="p">:</span><span class="o">=</span> <span class="nb">range</span> <span class="n">nodes</span> <span class="p">{</span>
-         <span class="k">if</span> <span class="err">!</span><span class="n">seen</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="p">{</span>
-        <span class="n">f</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
-        <span class="n">seen</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">true</span>
-        <span class="n">worklist</span> <span class="o">=</span> <span class="n">append</span><span class="p">(</span><span class="n">worklist</span><span class="p">,</span> <span class="p">(</span><span class="o">*</span><span class="n">node</span><span class="p">)</span><span class="o">.</span><span class="n">nodes</span><span class="o">...</span><span class="p">)</span>
-     <span class="p">}</span>
-      <span class="p">}</span>
-   <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="n">func</span> <span class="n">depthFirst</span><span class="p">(</span><span class="n">f</span> <span class="n">func</span><span class="p">(</span><span class="n">node</span> <span class="o">*</span><span class="n">tree</span><span class="p">),</span> <span class="n">node</span> <span class="o">*</span><span class="n">tree</span><span class="p">,</span> <span class="n">visited</span> <span class="nb">map</span><span class="p">[</span><span class="o">*</span><span class="n">tree</span><span class="p">]</span><span class="nb">bool</span><span class="p">)</span> <span class="p">{</span>
-   <span class="n">visited</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">true</span>
-   <span class="n">f</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
-   <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">child</span> <span class="p">:</span><span class="o">=</span> <span class="nb">range</span> <span class="p">(</span><span class="o">*</span><span class="n">node</span><span class="p">)</span><span class="o">.</span> <span class="n">nodes</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="err">!</span><span class="n">visited</span><span class="p">[</span><span class="n">child</span><span class="p">]</span> <span class="p">{</span>
-         <span class="n">depthFirst</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="n">visited</span><span class="p">)</span>
-      <span class="p">}</span>
-   <span class="p">}</span>
-<span class="p">}</span>
+        <div><p>Some might say that Ubuntu Server is not the ideal version for development and testing. But I like to keep a VM on AWS just for playing around with Go, and it is nice to have a good text editor with support forsyntax highlighting.</p>
+<p>With fresh install of Ubuntu 18.04, run the following to retrieve the snaps of NVIM and Go:</p>
+<div class="highlight"><pre><span></span>$ sudo snap install --beta nvim --classic
+$ sudo snap install go --classic
 </pre></div>
 
 
-<p>For testing the algorithms, there is a simple tree in the code. I depict the tree in the picture below:</p>
-<p><img alt="Tree Example" src="/images/tree.JPG"></p>
-<p>The expected output should be:</p>
-<div class="highlight"><pre><span></span>Breadth First:
- node0  node1  node2  node3  node4  node5  node6  node7
-Depth First:
- node0  node1  node3  node4  node5  node2  node6  node7
+<p>I am using <em>snap</em> because it retrieves the latest (or close) versions of the packages. Remember, this is an testing environment, not a production server. After installation, let's head to <a href="http://vim-bootstrap.com/">Vim Bootstrap</a> and create a configuration file for NVIM. Choose Go and whatever other languages you might find interesting, then at the final option be sure to pick <em>neovim</em>. Save the file as <em>$HOME/.confg/nvim/init.vim</em>. All you have to do now is start <em>nvim</em> and wait for it to download all the plugins.</p>
+<p>After this first batch of packages, you should configure at least one directory in your GOPATH. Let's use <em>$HOME/go</em>:</p>
+<div class="highlight"><pre><span></span>$ mkdir <span class="nv">$HOME</span>/go
+$ <span class="nb">export</span> <span class="nv">GOPATH</span><span class="o">=</span><span class="nv">$HOME</span>/go
 </pre></div>
 
 
-<p>This small example shows a lot of nice features of Go. We can see that function are first order elements (<em>nodeInfo</em> is provided as a parameter to other functions). <em>breadthFirst</em> is iterative, and <em>depthFirst</em> is recursive. We also have a <em>struct</em> with pointers.  </p></div>
+<p>Now open <em>nvim</em>, go to command prompt (type <em>:</em>) and then insert <em>GoInstallBinaries</em>. Besides syntax highlighting, you also get commands like <em>GoBuild</em> and <em>GoTest</em>. Code completion is also available, but it is a little bit tricky, here are the steps [Code Completion in neo vim with Go] (https://octetz.com/docs/2019/2019-04-24-vim-as-a-go-ide/)</p></div>
         <hr />
     </div>
 		
+
+ 
+        
+
+ 
+
+    <div class='article'>
+        <a href="/breadth-first-depth-first-go.html"><h2>An Example of Breadth-first and Depth-first Search Algorithms in Go</h2></a>
+        <div class= "well small"> Tue 20 November 2018
+
+by <a class="url fn" href="/author/jmhal.html">jmhal</a>
+ 
+
+
+ </div>
+        <div class="summary"><p>Traversing a Tree using classical algorithms.</p> <a class="btn btn-info xsmall" href="/breadth-first-depth-first-go.html">read more</a></div>
+    </div>	
+				
 
  
         
@@ -238,7 +194,7 @@ by <a class="url fn" href="/author/jmhal.html">jmhal</a>
     </div>     </div> 
 <footer>
 <br />
-<p><a href="">JMHAL</a> &copy; jmhal 2018</p>
+<p><a href="">JMHAL</a> &copy; jmhal 2020</p>
 </footer>
 
 </div> <!-- /container -->
